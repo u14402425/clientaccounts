@@ -173,7 +173,7 @@ class SQLQueries{
                 let sql = `SELECT transactionType, amount, date, time
                     FROM Log
                     WHERE accountID = ?
-                    ORDER BY date, time DESC LIMIT 6`;
+                    ORDER BY time ASC LIMIT 6`;
 
                  db.all(sql,[accID], (err, row) => {
                     if (err) {
@@ -195,7 +195,7 @@ class SQLQueries{
             let sql = `UPDATE Account SET currentBalance = ? WHERE accountID= ?`;
 
             if(parseInt(amount) > parseInt(amt)){
-                return callback('{“Status” : “Insufficient Funds”, “balance”: "'+ amt+'”}');
+                return callback('Insuffient funds');
             }
 
             let tbalance= parseInt(amt) - parseInt(amount);
@@ -204,19 +204,19 @@ class SQLQueries{
                     return console.error(err.message);
                 }
                 else{
-                      db.all(sql, [tbalance, accID], (err, row) => {
+                      db.run(sql, [tbalance, accID], (err, row) => {
                         if (err) {
                             return callback(err);
                         }
+                    });
                         sql = `INSERT INTO Log(transactionType,amount, accountID) Values(?,?,?)`;
                             db.run(sql, ['withdraw',amount,accID], (err) => {
                                 if (err) {
                                     callback(err);
                                 }
                            
-                            return callback('{“Status” : “Success”, “balance”: "'+ tbalance+'”}');
+                            return callback('Success, new balance: '+  tbalance);
                         });
-                    });
                 }
             });
 
@@ -237,19 +237,19 @@ class SQLQueries{
                         return console.error(err.message);
                     }
                     else{
-                          db.all(sql, [tbalance, accID], (err, row) => {
+                          db.run(sql, [tbalance, accID], (err, row) => {
                             if (err) {
                                 throw err;
                             }
+                        });
                             sql = `INSERT INTO Log(transactionType,amount, accountID) Values(?,?,?)`;
                             db.run(sql, ['deposit',amount,accID], (err) => {
                                 if (err) {
                                     callback(err);
                                 }
                            
-                            return callback('{“Status” : “Success”, “balance”: "'+ tbalance+'”}');
+                            return callback('Success, new balance: '+  tbalance);
                         });
-                    });
                 };
 
                 db.close();
@@ -339,8 +339,7 @@ class SQLQueries{
             }
         });
         let sql = `SELECT * 
-                FROM Log
-                ORDER BY date, time ASC`;
+                FROM Log`;
 
         db.all(sql, (err, row) => {
             if (err) {
