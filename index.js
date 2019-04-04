@@ -36,6 +36,60 @@ let db = new sqlite3.Database('./ClientAccountsDatabase.sqlite3', sqlite3.OPEN_R
 });
 
 
+app.post('/searchUserID', function(req, res, next) {
+  queries.getEntry(req.body.userId,function(amount){
+
+    res.json(amount);
+  });
+});
+
+app.post('/create', function (req, res, next) {
+    console.log('request received:', req.body.userID);
+      queries.createAccount(req.body.userID,function(amount){
+     res.json({create: amount});
+  });
+});
+
+app.post('/accountID', function(req, res, next) {
+    console.log('recieved');
+      queries.selectBalance(req.body.AccountId,function(amount){
+        console.log(req.body.AccountId);
+        res.json({amt: amount})
+      });
+      
+        //console.log(res.json({smt : statement}));
+});
+
+app.post('/statement', function(req, res, next) {
+    console.log("its in");
+    console.log(req.body.AccountId);
+    queries.printMini(req.body.AccountId, function(statement){
+        console.log(statement);
+    res.json(statement);
+  });
+});
+
+app.post('/withdraw', function (req, res, next) {
+    console.log('request received:', req.body.userID +" and "+ req.body.amount);
+      queries.withdraw(req.body.userID, req.body.amount,function(amount){
+    res.json({amt : amount});
+  });
+});
+
+app.post('/deposit', function (req, res, next) {
+    console.log('request received:', req.body.userID +" and "+ req.body.amount);
+      queries.deposit(req.body.userID, req.body.amount,function(amount){
+    res.json({amt : amount});
+  });
+});
+
+app.post('/delete', function (req, res, next) {
+    console.log('request received:', req.body.userID);
+    queries.deactivateUser(req.body.userID,function(amount){
+        res.send({msg : amount});
+      });
+});
+
 /**
 API
 **/
