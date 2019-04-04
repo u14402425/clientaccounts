@@ -46,7 +46,8 @@ app.post('/searchUserID', function(req, res, next) {
 app.post('/create', function (req, res, next) {
     console.log('request received:', req.body.userID);
       queries.createAccount(req.body.userID,function(amount){
-     res.json({create: amount});
+       
+     res.json({create: 'Entry Successfully Created!'});
   });
 });
 
@@ -83,10 +84,17 @@ app.post('/deposit', function (req, res, next) {
   });
 });
 
-app.post('/delete', function (req, res, next) {
+app.post('/deactivate', function (req, res, next) {
     console.log('request received:', req.body.userID);
     queries.deactivateUser(req.body.userID,function(amount){
-        res.send({msg : amount});
+        res.json({msg : amount});
+      });
+});
+
+app.post('/activate', function (req, res, next) {
+    console.log('request received:', req.body.userID);
+    queries.activateUser(req.body.userID,function(amount){
+        res.json({msg : amount});
       });
 });
 
