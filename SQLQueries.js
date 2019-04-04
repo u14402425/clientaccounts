@@ -339,7 +339,8 @@ class SQLQueries{
             }
         });
         let sql = `SELECT * 
-                FROM Log`;
+                FROM Log
+                ORDER BY date, time ASC`;
 
         db.all(sql, (err, row) => {
             if (err) {
