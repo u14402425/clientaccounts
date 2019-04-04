@@ -37,7 +37,7 @@ class SQLQueries{
                     
                 }); 
 
-                return callback("Entry created");
+                return callback("");
             });
             
         }
