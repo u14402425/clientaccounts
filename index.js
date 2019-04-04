@@ -103,7 +103,7 @@ app.post('/create/:userID', function (req, res) {
 
 //create new account, using given userID/clientID, balance = amount(2nd parameter)
 app.post('/createWDepo/:userID/:amount', function (req, res) {
-  queries.createAccount(req.params.userID, req.params.amount,function(amount){
+  queries.createAccountDeposit(req.params.userID, req.params.amount,function(amount){
   	res.end(amount);
   });
 });
