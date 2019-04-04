@@ -3,32 +3,10 @@ const app = require('express');
 
 class SQLQueries{
     createAccount(user, callback){
-         const sqlite3 = require('sqlite3').verbose();
-        let stringOut="";
-        let db = new sqlite3.Database('./ClientAccountsDatabase.sqlite3', sqlite3.OPEN_READWRITE, (err) => {
-            if (err) {
-                return callback(err.message);
-            }
-            else{
-                var accountTypes = ["Debit", "Cheque", "Savings"];
-                var accType =  accountTypes[Math.floor(Math.random()*accountTypes.length)];
-
-               let sql = `INSERT INTO  Account (userID, accountType) VALUES(?,?)`;
-                db.run(sql, [user, accType], (err) => {
-                if (err) {
-                    callback(err);
-                }
-                    return callback("Entry created");
-                }); 
-            }
-            
-        });
-
-         db.close();
-       
+        this.createAccountDeposit(user,0,callback);
     }
 
-    createAccount(user, amount, callback){
+    createAccountDeposit(user, amount, callback){
          const sqlite3 = require('sqlite3').verbose();
         let stringOut="";
         let db = new sqlite3.Database('./ClientAccountsDatabase.sqlite3', sqlite3.OPEN_READWRITE, (err) => {
