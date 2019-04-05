@@ -173,7 +173,13 @@ class SQLQueries{
             let sql = `UPDATE Account SET currentBalance = ? WHERE accountID= ?`;
 
             if(parseInt(amount) > parseInt(amt)){
-                return callback('Insuffient funds');
+                //-----Reporting-----
+        
+                var rep = new reporting;
+                rep.log('5', -1, accID, "-1", -1);
+                
+                //-------------------
+                return callback('{“Status” : “Insufficient Funds”, “balance”: "'+ amt+'”}');
             }
 
             let tbalance= parseInt(amt) - parseInt(amount);
@@ -182,24 +188,26 @@ class SQLQueries{
                     return console.error(err.message);
                 }
                 else{
-                      db.run(sql, [tbalance, accID], (err, row) => {
+                      db.all(sql, [tbalance, accID], (err, row) => {
                         if (err) {
                             return callback(err);
                         }
-                    });
                         sql = `INSERT INTO Log(transactionType,amount, accountID) Values(?,?,?)`;
                             db.run(sql, ['withdraw',amount,accID], (err) => {
                                 if (err) {
                                     callback(err);
                                 }
-                           
-                            return callback('Success, new balance: '+  tbalance);
+                            var rep = new reporting;
+                            rep.log('5', -1, accID, "-1", amount);
+                            return callback('{“Status” : “Success”, “balance”: "'+ tbalance+'”}');
                         });
+                    });
                 }
             });
 
             db.close();
         });
+        
 }
 
     deposit(accID,amount,callback){
@@ -215,26 +223,32 @@ class SQLQueries{
                         return console.error(err.message);
                     }
                     else{
-                          db.run(sql, [tbalance, accID], (err, row) => {
+                          db.all(sql, [tbalance, accID], (err, row) => {
                             if (err) {
                                 throw err;
                             }
-                        });
                             sql = `INSERT INTO Log(transactionType,amount, accountID) Values(?,?,?)`;
                             db.run(sql, ['deposit',amount,accID], (err) => {
                                 if (err) {
                                     callback(err);
                                 }
-                           
-                            return callback('Success, new balance: '+  tbalance);
+                            //-----Reporting-----
+
+                            var rep = new reporting;
+                            rep.log('6', -1, accID, "-1", amount);
+
+                            //-------------------
+                            return callback('{“Status” : “Success”, “balance”: "'+ tbalance+'”}');
                         });
+                    });
                 };
 
                 db.close();
             });
 
         });
-    }
+        
+}
 
     selectBalance(account,callback) {
         const sqlite3 = require('sqlite3').verbose();
