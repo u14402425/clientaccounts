@@ -162,7 +162,7 @@ class SQLQueries{
                 let sql = `SELECT transactionType, amount, date, time
                     FROM Log
                     WHERE accountID = ?
-                    ORDER BY date, time DESC LIMIT 6`;
+                    ORDER BY time ASC LIMIT 6`;
 
                  db.all(sql,[accID], (err, row) => {
                     if (err) {
