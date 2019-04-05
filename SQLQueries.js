@@ -1,18 +1,13 @@
 const sqlite3 = require('sqlite3');
 const app = require('express');
-const reporting = require('./Reporting');
+
 
 class SQLQueries{
     createAccount(user, callback){
 
         this.createAccountDeposit(user,0,callback);
         
-                //-----Reporting------
-        
-                var rep = new reporting;
-                rep.log('1', user, -1, "-1", 0.0);
-
-                //-------------------
+            
                
     }
 
@@ -39,12 +34,7 @@ class SQLQueries{
                     }
                 });
                 
-                //------Reporting-----
-                    
-                var rep = new reporting;
-                rep.log('7', user, -1, accType, -1);
-
-                //-------------------
+                
                     
                 sql = `INSERT INTO Log(transactionType,amount, accountID) Values(?,?,?)`;
                 db.run(sql, ['deposit',amount,accID], (err) => {
@@ -81,8 +71,7 @@ class SQLQueries{
             if (err) {
                 throw err;
             }
-            var rep = new reporting;
-            rep.log('2', user, -1, "-1", -1);
+           
             return callback(row);
             
         });
@@ -179,8 +168,8 @@ class SQLQueries{
                     if (err) {
                         throw err;
                     }
-                     var rep = new reporting;
-                    rep.log('4', -1, accID, "-1", -1);
+                    
+                     
                     stringOut += `${row.transactionType} + '  R' +${row.amount}, ' date: '+ ${row.date} ${row.time}\n `;
                     return callback(row);
                 });
@@ -198,12 +187,7 @@ class SQLQueries{
             let sql = `UPDATE Account SET currentBalance = ? WHERE accountID= ?`;
 
             if(parseInt(amount) > parseInt(amt)){
-                //-----Reporting-----
-        
-                var rep = new reporting;
-                rep.log('5', -1, accID, "-1", -1);
                 
-                //-------------------
                 return callback('{“Status” : “Insufficient Funds”, “balance”: "'+ amt+'”}');
             }
 
@@ -222,8 +206,7 @@ class SQLQueries{
                                 if (err) {
                                     callback(err);
                                 }
-                            var rep = new reporting;
-                            rep.log('5', -1, accID, "-1", amount);
+                           
                             return callback('{“Status” : “Success”, “balance”: "'+ tbalance+'”}');
                         });
                     });
@@ -257,12 +240,7 @@ class SQLQueries{
                                 if (err) {
                                     callback(err);
                                 }
-                            //-----Reporting-----
-
-                            var rep = new reporting;
-                            rep.log('6', -1, accID, "-1", amount);
-
-                            //-------------------
+                           
                             return callback('{“Status” : “Success”, “balance”: "'+ tbalance+'”}');
                         });
                     });
@@ -289,12 +267,7 @@ class SQLQueries{
                     if (err) {
                         throw err;
                     }
-                    //-----Reporting-----
-            
-                        var rep = new reporting;
-                        rep.log('3', -1, account, "-1", -1);
-                    
-                    //-------------------
+                   
                     return callback(parseInt(row.currentBalance));
                 });
             }
@@ -319,12 +292,7 @@ class SQLQueries{
                     if (err) {
                         throw err;
                     }
-                    //-----Reporting------
-        
-                    var rep = new reporting;
-                    rep.log('8', user, -1, "-1", -1);
                     
-                    //-------------------
                      return callback('deactivated successfully');
                 });
             }
@@ -348,12 +316,7 @@ class SQLQueries{
                     if (err) {
                         throw err;
                     }
-                    //-----Reporting------
-        
-                        var rep = new reporting;
-                        rep.log('9', user, -1, "-1", -1);
-                        
-                    //--------------------
+                    
                     return callback('re-activated successfully');
                     
                 });
