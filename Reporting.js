@@ -7,7 +7,6 @@ class Reporting {
 		var eventS = '';
 		var data = {};
 		var timestmp = Math.round(+new Date());
-		var fs = require("fs");
 		
                 switch(code) {
 			case '1':
@@ -53,35 +52,20 @@ class Reporting {
 		this.saveEvent(data);
 	}
 	
-	postToRepSubSystem(numLines)
+
+	
+	saveEvent(data)
 	{
-		//remember to delete text file here
-		console.log("Posting Log Report to REP Sub System");
-		var lines;
-		var obj = [];
-		//var dataL;
-                //var fs = require("fs");
-		
-		var fs = require("fs");
-		var dat = fs.readFileSync('Report.txt');
-			
-                lines = dat.toString().split('\n');
-		var i;
-		for(i = 0; i < numLines; i++)
-		{
-                        lines[i].substr(0,lines[i].length - 1)
-                        console.log(lines[i]);
-			var dataL = JSON.parse(lines[i]);
-			obj.push(dataL);
-		}
-		
-		//post to reporting sub system
+		var numLines = 0;
+		var dataS = JSON.stringify(data)+"\n";
+                
+                //post to reporting sub system
 		
 		const axios = require('axios');
 		
 		axios.post('https://fnbreports-6455.nodechef.com/api', {
 			system: 'CAS',
-			data: JSON.stringify(obj)
+			data: dataS
 		})
 		.then((res) => {
 			console.log('statusCode: ${res.statusCode}')
@@ -93,36 +77,7 @@ class Reporting {
 		
 		console.log('Log Posted');
                 
-                fs.unlink('Report.txt', function (err) {
-                    if (err) throw err;
-                    // if no error, file has been deleted successfully
-                    console.log('File deleted!');
-                });
-	}
-	
-	saveEvent(data)
-	{
-		var numLines = 0;
-		var dataS = JSON.stringify(data)+"\n";
-                var fs = require("fs");
-		fs.appendFileSync('Report.txt',dataS, (err) => {
-			if (err) throw err;
-		})
-                
-                console.log('Logged an event in Report.txt');
-		
-                var tmp = 0;
-                
-		var dat = fs.readFileSync('Report.txt');
-                
-                numLines = dat.toString().split('\n').length-1;
-		
-                //console.log(numLines);
-                
-		if(numLines >= 50)
-		{
-			this.postToRepSubSystem(numLines);
-		}
+              
 	}
 	
 }
