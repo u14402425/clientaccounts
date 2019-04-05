@@ -16,7 +16,7 @@ class SQLQueries{
                
     }
 
-    createAccount(user, amount, callback){
+    createAccountDeposit(user, amount, callback){
          const sqlite3 = require('sqlite3').verbose();
         let stringOut="";
         let db = new sqlite3.Database('./ClientAccountsDatabase.sqlite3', sqlite3.OPEN_READWRITE, (err) => {
